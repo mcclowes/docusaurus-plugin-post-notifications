@@ -1,6 +1,6 @@
-# Contributing to docusaurus-plugin-starter
+# Contributing to docusaurus-plugin-new-post-toast
 
-Thanks for helping improve the plugin starter! This document explains how to work on the project and what to expect from the contribution process.
+Thanks for helping improve the plugin! This document explains how to work on the project and what to expect from the contribution process.
 
 ## Code of Conduct
 
@@ -22,7 +22,7 @@ Open an issue with:
 Share your idea by opening an issue that includes:
 
 - The problem you are trying to solve
-- Why it matters for people using the starter
+- Why it matters for people using the plugin
 - Any screenshots, mock-ups, or references that give context
 
 ### Submit pull requests
@@ -35,8 +35,8 @@ Share your idea by opening an issue that includes:
 ## Local development
 
 ```bash
-git clone https://github.com/mcclowes/docusaurus-plugin-starter.git
-cd docusaurus-plugin-starter
+git clone https://github.com/mcclowes/docusaurus-plugin-new-post-toast.git
+cd docusaurus-plugin-new-post-toast
 npm install
 ```
 
@@ -50,28 +50,35 @@ npm install
 
 ```text
 src/
-  client/                # Client modules shipped via getClientModules
-  components/            # React components used by the plugin (StarterPage)
-  plugin.ts              # Typed plugin implementation
-  remark/                # Example remark plugin
-  theme/                 # Theme components exposed for swizzling
-dist/                    # Compiled output shipped to npm
+  index.ts             # Main export
+  plugin.ts            # Plugin implementation with contentLoaded hook
+  types.ts             # TypeScript interfaces
+  options.ts           # Default options and validation
+  client/
+    index.ts           # Client module (lifecycle hooks)
+    storage.ts         # localStorage utilities
+    comparison.ts      # Post date comparison logic
+  theme/
+    NewPostToast/      # Toast component and styles
+    Root/              # Root wrapper for toast container
+dist/                  # Compiled output shipped to npm
 examples/docusaurus-v3/  # Example site consuming ../../dist
-scripts/                 # Helper scripts for build/watch flows
+scripts/               # Helper scripts for build/watch flows
+__tests__/             # Jest tests
 ```
 
 Edit files in `src/` and run the build script before publishing or testing against `dist/`.
 
 ## Testing checklist
 
-- Add or update tests near the code you touched (React components under `src/components` or `src/theme`, plugin logic under `__tests__/`).
+- Add or update tests near the code you touched (plugin logic under `__tests__/`, component tests in `src/theme`).
 - Run `npm test` and ensure it passes.
 - Run `npm run example:start` if your change affects runtime behaviour.
 - Keep coverage healthy—try not to reduce it without a strong reason.
 
 ## Style guidelines
 
-- TypeScript for plugin logic; JSX for components.
+- TypeScript for plugin logic; TSX for components.
 - Follow Prettier formatting (`npm run format`).
 - Use meaningful names and add comments for non-obvious logic.
 - Avoid editing files in `dist/` directly; they are generated.

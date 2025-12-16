@@ -14,8 +14,14 @@ declare module '@theme/Layout' {
   export default function Layout(props: Props): JSX.Element;
 }
 
-declare module '@theme/StarterMessage' {
-  export default function StarterMessage(): JSX.Element | null;
+declare module '@docusaurus/Link' {
+  import type { ComponentProps } from 'react';
+  export interface Props extends ComponentProps<'a'> {
+    to: string;
+    activeClassName?: string;
+    isNavLink?: boolean;
+  }
+  export default function Link(props: Props): JSX.Element;
 }
 
 declare module '@docusaurus/useDocusaurusContext' {

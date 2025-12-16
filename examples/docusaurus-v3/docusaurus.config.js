@@ -1,18 +1,17 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
-import pluginStarter from '../../dist/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 /** @type {import('@docusaurus/types').Config} */
 export default {
-  title: 'Plugin Starter Example',
+  title: 'New Post Toast Example',
   url: 'https://example.com',
   baseUrl: '/',
   favicon: 'img/favicon.ico',
   organizationName: 'example',
-  projectName: 'plugin-starter-example-site',
+  projectName: 'new-post-toast-example-site',
   onBrokenLinks: 'throw',
   markdown: {
     hooks: {
@@ -27,21 +26,10 @@ export default {
       /** @type {import('@docusaurus/preset-classic').Options} */ ({
         docs: {
           sidebarPath: path.resolve(__dirname, './sidebars.js'),
-          remarkPlugins: [
-            pluginStarter.createStarterRemarkPlugin({
-              marker: 'NOTE',
-              replacement: '💡 NOTE',
-            }),
-          ],
         },
-        blog: false,
-        pages: {
-          remarkPlugins: [
-            pluginStarter.createStarterRemarkPlugin({
-              marker: 'NOTE',
-              replacement: '💡 NOTE',
-            }),
-          ],
+        blog: {
+          showReadingTime: true,
+          blogSidebarCount: 'ALL',
         },
         theme: {
           customCss: path.resolve(__dirname, './src/css/custom.css'),
@@ -55,8 +43,20 @@ export default {
       // Use the local plugin from the repo root
       path.resolve(__dirname, '../../dist'),
       {
-        greetingMessage: 'Welcome to the example site!',
-        routePath: '/starter',
+        // Toast appearance
+        toast: {
+          position: 'bottom-right',
+          duration: 8000,
+          maxToasts: 3,
+          showDescription: true,
+          showDate: true,
+        },
+        // Behavior
+        behavior: {
+          showOnFirstVisit: true, // Show on first visit for demo purposes
+          maxAgeDays: 365, // Show older posts for demo
+          delay: 1000,
+        },
       },
     ],
     // Plugin to configure webpack to ignore Node.js modules
@@ -85,14 +85,12 @@ export default {
     },
   ],
 
-  // remarkPlugins configured via preset (docs/pages)
-
   themeConfig: {
     navbar: {
-      title: 'Plugin Starter',
+      title: 'New Post Toast Demo',
       items: [
         { to: '/docs/intro', label: 'Docs', position: 'left' },
-        { to: '/starter', label: 'Starter Route', position: 'left' },
+        { to: '/blog', label: 'Blog', position: 'left' },
       ],
     },
   },

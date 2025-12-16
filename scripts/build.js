@@ -29,7 +29,7 @@ async function build() {
   };
 
   // Copy JS files and directories (TypeScript compiles index.ts to index.js)
-  const itemsToCopy = ['components', 'theme', 'remark', 'client'];
+  const itemsToCopy = ['theme', 'client'];
 
   for (const item of itemsToCopy) {
     const sourcePath = join(srcDir, item);

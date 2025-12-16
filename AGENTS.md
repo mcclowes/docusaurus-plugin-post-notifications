@@ -1,6 +1,6 @@
 # Claude Code Agents & Skills
 
-This document describes the specialized Claude Code agents and skills available for this project. These agents provide context-aware assistance for working with the docusaurus-plugin-starter codebase.
+This document describes the specialized Claude Code agents and skills available for this project. These agents provide context-aware assistance for working with the docusaurus-plugin-new-post-toast codebase.
 
 ## What are Claude Skills?
 
@@ -8,25 +8,7 @@ Claude skills are specialized agents that provide domain-specific knowledge and 
 
 ## Available Skills
 
-### 1. `docusaurus-glossary`
-
-**When to use:** Working with docusaurus-plugin-glossary configuration, managing glossary terms, troubleshooting issues, or explaining features.
-
-**What it helps with:**
-
-- Configuring the plugin in `docusaurus.config.js`
-- Creating and managing glossary JSON files
-- Troubleshooting auto-linking issues
-- Understanding component usage (`<GlossaryTerm>`)
-- Debugging term detection and tooltip behavior
-
-**Example use cases:**
-
-- "Why aren't my glossary terms auto-linking?"
-- "How do I add a new glossary term?"
-- "Configure the glossary plugin with custom route path"
-
-### 2. `docusaurus-plugin-dev`
+### 1. `docusaurus-plugin-dev`
 
 **When to use:** Developing and building Docusaurus plugins, especially understanding the plugin architecture used in this project.
 
@@ -44,7 +26,7 @@ Claude skills are specialized agents that provide domain-specific knowledge and 
 - "Implement a new lifecycle hook for the plugin"
 - "Fix SSR errors in the plugin"
 
-### 3. `docusaurus-plugins`
+### 2. `docusaurus-plugins`
 
 **When to use:** Creating or modifying Docusaurus plugins, particularly remark/rehype plugins for markdown/HTML transformation.
 
@@ -59,10 +41,10 @@ Claude skills are specialized agents that provide domain-specific knowledge and 
 **Example use cases:**
 
 - "Create a new remark plugin for custom syntax"
-- "Modify the glossary-terms remark plugin"
 - "Add a new theme component"
+- "Modify plugin lifecycle hooks"
 
-### 4. `docusaurus-config`
+### 3. `docusaurus-config`
 
 **When to use:** Validating or modifying `docusaurus.config.js` or `docusaurus.config.ts` files.
 
@@ -76,10 +58,10 @@ Claude skills are specialized agents that provide domain-specific knowledge and 
 **Example use cases:**
 
 - "Validate my docusaurus.config.js"
-- "Add the glossary plugin to the config"
-- "Configure remark plugins in the preset"
+- "Add the new-post-toast plugin to the config"
+- "Configure plugin options"
 
-### 5. `docusaurus-themes`
+### 4. `docusaurus-themes`
 
 **When to use:** Swizzling Docusaurus theme components or editing theme elements.
 
@@ -92,16 +74,26 @@ Claude skills are specialized agents that provide domain-specific knowledge and 
 
 **Example use cases:**
 
-- "Swizzle the GlossaryTerm component"
-- "Customize the glossary page layout"
+- "Swizzle the NewPostToast component"
+- "Customize the toast appearance"
 - "Override default theme styles"
+
+### 5. `docusaurus-glossary`
+
+**When to use:** Working with docusaurus-plugin-glossary (if integrated).
+
+**What it helps with:**
+
+- Configuring glossary plugins
+- Managing glossary terms
+- Troubleshooting auto-linking
 
 ## How to Use Skills
 
 Claude Code automatically discovers and activates relevant skills based on the task at hand. You can also explicitly request a skill:
 
 ```
-Use the docusaurus-glossary skill to help me configure the plugin
+Use the docusaurus-plugin-dev skill to help me modify the client module
 ```
 
 Skills automatically load relevant context and provide specialized assistance for the task at hand.
@@ -138,7 +130,7 @@ In addition to specialized skills, Claude Code provides general-purpose agents:
 **Usage:**
 
 ```
-Explore the codebase to understand how remark plugins work
+Explore the codebase to understand how the toast component works
 ```
 
 ### Plan Agent
@@ -155,7 +147,7 @@ Explore the codebase to understand how remark plugins work
 **Usage:**
 
 ```
-Plan how to add support for glossary term aliases
+Plan how to add support for custom toast templates
 ```
 
 ## Best Practices

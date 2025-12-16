@@ -15,7 +15,8 @@ module.exports = {
     '\\.css$': require.resolve('./jest/cssMapper.js'),
     '^unist-util-visit$': '<rootDir>/jest/mocks/unist-util-visit.js',
   },
-  testMatch: ['**/__tests__/**/*.(t|j)s?(x)', '**/?(*.)+(spec|test).(t|j)s?(x)'],
+  testMatch: ['**/__tests__/**/*.(t|j)s?(x)', '<rootDir>/src/**/?(*.)+(spec|test).(t|j)s?(x)'],
+  testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
   collectCoverageFrom: [
     'src/components/**/*.{ts,tsx}',
     'src/theme/**/*.{ts,tsx}',

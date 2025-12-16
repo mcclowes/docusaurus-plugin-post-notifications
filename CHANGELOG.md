@@ -7,16 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
+### Changed
 
-- Updated `.claude/skills/docusaurus-glossary/` to sync with upstream docusaurus-plugin-glossary repo
-  - SKILL.md now recommends preset-based configuration
-  - configuration.md includes preset and manual configuration options
-  - troubleshooting.md updated for preset approach
-- Fixed `.claude/skills/docusaurus-plugin-dev/SKILL.md` reference paths (removed hardcoded absolute paths)
-- Replaced `package/README.md` with correct docusaurus-plugin-starter documentation (was stale glossary content)
-- Removed empty `src/theme/GlossaryTerm/` directory
-- Updated `AGENTS.md` to remove outdated skill invocation instructions
+- Transformed from docusaurus-plugin-starter to docusaurus-plugin-new-post-toast
+- Complete rewrite to implement new blog post toast notifications
+
+### Added
+
+- Toast notifications for new blog posts based on localStorage lastVisit timestamp
+- Configurable toast appearance (position, duration, maxToasts, showDescription, showDate, showImage)
+- Behavior options (showOnFirstVisit, maxAgeDays, excludePaths, onlyOnBlogPages, delay)
+- localStorage utilities for tracking last visit and dismissed posts
+- Post comparison logic to find new posts since last visit
+- NewPostToast theme component with CSS animations
+- Root wrapper component for injecting toast container
+- Dark mode support via Docusaurus CSS variables
+- Reduced motion accessibility support
+- Mobile responsive design
+- Comprehensive test suite for plugin and comparison logic
+
+### Removed
+
+- StarterPage component and route
+- StarterMessage theme component
+- starterRemarkPlugin remark plugin
+- Old starter template documentation
 
 ## [0.1.0] - 2024-11-17
 
@@ -33,5 +48,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Prettier formatting configuration
 - Claude Code skills for Docusaurus development assistance
 
-[Unreleased]: https://github.com/mcclowes/docusaurus-plugin-starter/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/mcclowes/docusaurus-plugin-starter/releases/tag/v0.1.0
+[Unreleased]: https://github.com/mcclowes/docusaurus-plugin-new-post-toast/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/mcclowes/docusaurus-plugin-new-post-toast/releases/tag/v0.1.0
