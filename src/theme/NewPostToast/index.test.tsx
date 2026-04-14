@@ -23,6 +23,7 @@ jest.mock('../../client/storage', () => ({
   getLastVisit: jest.fn(() => '2025-01-01T00:00:00.000Z'),
   updateLastVisit: jest.fn(),
   getDismissedPosts: jest.fn(() => []),
+  pruneDismissedPosts: jest.fn(),
 }));
 
 jest.mock('../../client/comparison', () => ({
@@ -167,7 +168,7 @@ describe('NewPostToastContainer', () => {
     render(<NewPostToastContainer />);
 
     await waitFor(() => {
-      const alerts = screen.getAllByRole('alert');
+      const alerts = screen.getAllByRole('status');
       const container = alerts[0].parentElement;
       expect(container).toHaveClass('bottomRight');
     });
@@ -199,7 +200,7 @@ describe('NewPostToastContainer', () => {
     });
 
     // Should only show 3 toasts (maxToasts setting)
-    const alerts = screen.getAllByRole('alert');
+    const alerts = screen.getAllByRole('status');
     expect(alerts).toHaveLength(3);
   });
 
@@ -212,11 +213,11 @@ describe('NewPostToastContainer', () => {
     });
   });
 
-  it('renders "New Post" badge', async () => {
+  it('renders "New post" badge', async () => {
     render(<NewPostToastContainer />);
 
     await waitFor(() => {
-      const badges = screen.getAllByText('New Post');
+      const badges = screen.getAllByText('New post');
       expect(badges.length).toBeGreaterThan(0);
     });
   });

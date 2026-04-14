@@ -3,9 +3,9 @@ export type {
   NewPostToastOptions,
   ResolvedNewPostToastOptions,
   BlogPostMetadata,
-  NewPostToastPluginContent,
   NewPostToastGlobalData,
   StorageData,
+  ToastPosition,
 } from './types';
 export { resolveOptions, DEFAULT_OPTIONS } from './options';
 export {

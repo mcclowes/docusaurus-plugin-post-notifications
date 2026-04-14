@@ -18,8 +18,8 @@ test.describe('New Post Toast', () => {
     // Toast should appear within the configured delay + some buffer
     await expect(toast).toBeVisible({ timeout: 5000 });
 
-    // Should show "New Post" badge
-    await expect(toast.locator('text=New Post')).toBeVisible();
+    // Should show "New post" badge
+    await expect(toast.locator('text=New post')).toBeVisible();
   });
 
   test('toast contains post title', async ({ page }) => {

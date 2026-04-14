@@ -10,16 +10,6 @@ describe('pluginNewPostToast', () => {
     expect(plugin.name).toBe('docusaurus-plugin-new-post-toast');
   });
 
-  it('skips client modules when disabled', () => {
-    const plugin = pluginNewPostToast(context, { enabled: false });
-    expect(plugin.getClientModules()).toEqual([]);
-  });
-
-  it('provides client modules when enabled', () => {
-    const plugin = pluginNewPostToast(context, { enabled: true });
-    expect(plugin.getClientModules()[0]).toContain('client/index.js');
-  });
-
   it('resolves theme path', () => {
     const plugin = pluginNewPostToast(context, {});
     expect(plugin.getThemePath()).toContain('theme');

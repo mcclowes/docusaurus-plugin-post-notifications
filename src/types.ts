@@ -1,53 +1,42 @@
-// Plugin options interface
+export type ToastPosition =
+  | 'bottom-right'
+  | 'bottom-left'
+  | 'top-right'
+  | 'top-left'
+  | 'bottom-center'
+  | 'top-center';
+
 export interface NewPostToastOptions {
-  // Enable/disable the plugin
   enabled?: boolean;
 
-  // Toast appearance
   toast?: {
-    position?:
-      | 'bottom-right'
-      | 'bottom-left'
-      | 'top-right'
-      | 'top-left'
-      | 'bottom-center'
-      | 'top-center';
-    duration?: number; // Auto-dismiss after ms (0 = no auto-dismiss)
-    maxToasts?: number; // Max toasts to show at once (default: 3)
-    showDescription?: boolean; // Show post description in toast
-    showDate?: boolean; // Show post date
-    showImage?: boolean; // Show post thumbnail if available
+    position?: ToastPosition;
+    duration?: number;
+    maxToasts?: number;
+    showDescription?: boolean;
+    showDate?: boolean;
+    showImage?: boolean;
   };
 
-  // Behavior
   behavior?: {
-    showOnFirstVisit?: boolean; // Show toast on first-ever visit (default: false)
-    maxAgeDays?: number; // Only show posts from last N days (default: 30)
-    excludePaths?: string[]; // Don't show toast on these paths
-    onlyOnBlogPages?: boolean; // Only show on /blog/* pages
-    delay?: number; // Delay before showing toast (ms, default: 1000)
+    showOnFirstVisit?: boolean;
+    maxAgeDays?: number;
+    excludePaths?: string[];
+    onlyOnBlogPages?: boolean;
+    delay?: number;
   };
 
-  // Storage
   storage?: {
-    key?: string; // localStorage key prefix
-    trackDismissed?: boolean; // Remember dismissed posts (default: true)
+    key?: string;
+    trackDismissed?: boolean;
   };
 
-  // Blog integration
   blog?: {
-    pluginId?: string; // If using multiple blog instances
-    path?: string; // Blog path (default: '/blog')
-  };
-
-  // Customization
-  custom?: {
-    toastComponent?: string; // Path to custom toast component
-    formatDate?: (date: string) => string; // Date formatter
+    pluginId?: string;
+    path?: string;
   };
 }
 
-// Resolved options with all defaults applied
 export interface ResolvedNewPostToastOptions {
   enabled: boolean;
   toast: Required<NonNullable<NewPostToastOptions['toast']>>;
@@ -56,23 +45,16 @@ export interface ResolvedNewPostToastOptions {
   blog: Required<NonNullable<NewPostToastOptions['blog']>>;
 }
 
-// Blog post metadata extracted from the blog plugin
 export interface BlogPostMetadata {
   id: string;
   title: string;
   description?: string;
   permalink: string;
-  date: string; // ISO string
+  date: string;
   image?: string;
   tags?: string[];
 }
 
-// Plugin content returned by loadContent
-export interface NewPostToastPluginContent {
-  posts: BlogPostMetadata[];
-}
-
-// Global data set for client access
 export interface NewPostToastGlobalData {
   posts: BlogPostMetadata[];
   options: {
@@ -83,23 +65,8 @@ export interface NewPostToastGlobalData {
   };
 }
 
-// localStorage schema
 export interface StorageData {
-  lastVisit: string; // ISO timestamp
-  dismissedPosts: string[]; // Array of post IDs
-  version?: number; // Schema version for future migrations
-}
-
-// Toast component props
-export interface ToastProps {
-  post: BlogPostMetadata;
-  options: ResolvedNewPostToastOptions['toast'];
-  onDismiss: (postId: string) => void;
-  index: number;
-}
-
-// Toast container props
-export interface ToastContainerProps {
-  posts: BlogPostMetadata[];
-  options: ResolvedNewPostToastOptions['toast'];
+  lastVisit: string;
+  dismissedPosts: string[];
+  version?: number;
 }

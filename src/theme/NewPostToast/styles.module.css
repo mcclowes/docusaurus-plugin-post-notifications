@@ -172,6 +172,21 @@
   position: relative;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .toast,
+  .toast.exiting,
+  .bottomLeft .toast,
+  .topLeft .toast,
+  .bottomCenter .toast,
+  .topCenter .toast,
+  .bottomLeft .toast.exiting,
+  .topLeft .toast.exiting,
+  .bottomCenter .toast.exiting,
+  .topCenter .toast.exiting {
+    animation: none;
+  }
+}
+
 .badge {
   display: inline-block;
   background: var(--ifm-color-primary);

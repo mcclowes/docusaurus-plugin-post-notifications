@@ -1,6 +1,8 @@
 import type { BlogPostMetadata, ResolvedNewPostToastOptions } from '../types';
 import { getDismissedPosts } from './storage';
 
+const MS_PER_DAY = 86_400_000;
+
 export interface GetNewPostsOptions {
   posts: BlogPostMetadata[];
   lastVisit: string | null;
@@ -8,35 +10,39 @@ export interface GetNewPostsOptions {
     behavior: ResolvedNewPostToastOptions['behavior'];
     storage: ResolvedNewPostToastOptions['storage'];
   };
+  dismissedPosts?: string[];
 }
 
-export function getNewPosts({ posts, lastVisit, options }: GetNewPostsOptions): BlogPostMetadata[] {
-  // First visit - don't show anything unless configured to
+export function getNewPosts({
+  posts,
+  lastVisit,
+  options,
+  dismissedPosts,
+}: GetNewPostsOptions): BlogPostMetadata[] {
   if (!lastVisit && !options.behavior.showOnFirstVisit) {
     return [];
   }
 
-  const lastVisitDate = lastVisit ? new Date(lastVisit) : new Date(0);
-  const maxAge = options.behavior.maxAgeDays;
-  const cutoffDate = new Date();
-  cutoffDate.setDate(cutoffDate.getDate() - maxAge);
-
-  // Get dismissed posts
-  const dismissedPosts = new Set(getDismissedPosts(options.storage.key));
+  const lastVisitMs = lastVisit ? Date.parse(lastVisit) : 0;
+  const cutoffMs = Date.now() - options.behavior.maxAgeDays * MS_PER_DAY;
+  const dismissed = new Set(dismissedPosts ?? getDismissedPosts(options.storage.key));
 
   return posts.filter(post => {
-    const postDate = new Date(post.date);
+    const postMs = Date.parse(post.date);
+    if (Number.isNaN(postMs)) return false;
 
-    // Post must be:
-    // 1. Newer than last visit
-    // 2. Within maxAgeDays
-    // 3. Not already dismissed (if tracking is enabled)
-    const isNewerThanLastVisit = postDate > lastVisitDate;
-    const isWithinMaxAge = postDate > cutoffDate;
-    const isNotDismissed = !options.storage.trackDismissed || !dismissedPosts.has(post.id);
+    const isNewerThanLastVisit = postMs > lastVisitMs;
+    const isWithinMaxAge = postMs > cutoffMs;
+    const isNotDismissed = !options.storage.trackDismissed || !dismissed.has(post.id);
 
     return isNewerThanLastVisit && isWithinMaxAge && isNotDismissed;
   });
+}
+
+function pathMatchesPrefix(pathname: string, prefix: string): boolean {
+  if (pathname === prefix) return true;
+  const withSlash = prefix.endsWith('/') ? prefix : prefix + '/';
+  return pathname.startsWith(withSlash);
 }
 
 export function shouldExcludePath(
@@ -46,17 +52,12 @@ export function shouldExcludePath(
     blog: ResolvedNewPostToastOptions['blog'];
   }
 ): boolean {
-  // Check if current path is in excludePaths
-  if (options.behavior.excludePaths.some(excludePath => pathname.startsWith(excludePath))) {
+  if (options.behavior.excludePaths.some(p => pathMatchesPrefix(pathname, p))) {
     return true;
   }
 
-  // If onlyOnBlogPages is true, exclude non-blog pages
-  if (options.behavior.onlyOnBlogPages) {
-    const blogPath = options.blog.path;
-    if (!pathname.startsWith(blogPath)) {
-      return true;
-    }
+  if (options.behavior.onlyOnBlogPages && !pathMatchesPrefix(pathname, options.blog.path)) {
+    return true;
   }
 
   return false;

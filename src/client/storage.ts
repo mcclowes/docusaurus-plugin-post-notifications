@@ -1,6 +1,7 @@
 import type { StorageData } from '../types';
 
 const DEFAULT_STORAGE_KEY = 'docusaurus-new-post-toast';
+const SCHEMA_VERSION = 1;
 
 function canUseLocalStorage(): boolean {
   if (typeof window === 'undefined') return false;
@@ -20,7 +21,13 @@ export function getStorageData(storageKey: string = DEFAULT_STORAGE_KEY): Storag
 
   try {
     const raw = localStorage.getItem(storageKey);
-    return raw ? (JSON.parse(raw) as StorageData) : null;
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<StorageData>;
+    return {
+      lastVisit: typeof parsed.lastVisit === 'string' ? parsed.lastVisit : '',
+      dismissedPosts: Array.isArray(parsed.dismissedPosts) ? parsed.dismissedPosts : [],
+      version: typeof parsed.version === 'number' ? parsed.version : SCHEMA_VERSION,
+    };
   } catch {
     return null;
   }
@@ -36,16 +43,24 @@ export function setStorageData(
     const existing = getStorageData(storageKey) || {
       lastVisit: '',
       dismissedPosts: [],
-      version: 1,
+      version: SCHEMA_VERSION,
     };
     const merged: StorageData = {
       ...existing,
       ...data,
-      version: 1,
+      version: SCHEMA_VERSION,
     };
     localStorage.setItem(storageKey, JSON.stringify(merged));
   } catch {
-    // localStorage may be unavailable (private browsing, quota exceeded)
+    // Storage may fail (quota, private mode); if quota, try trimming dismissed list.
+    try {
+      localStorage.setItem(
+        storageKey,
+        JSON.stringify({ ...data, dismissedPosts: [], version: SCHEMA_VERSION })
+      );
+    } catch {
+      /* give up */
+    }
   }
 }
 
@@ -69,6 +84,18 @@ export function addDismissedPost(postId: string, storageKey: string = DEFAULT_ST
   setStorageData({ dismissedPosts: Array.from(dismissed) }, storageKey);
 }
 
+export function pruneDismissedPosts(
+  knownPostIds: string[],
+  storageKey: string = DEFAULT_STORAGE_KEY
+): void {
+  const known = new Set(knownPostIds);
+  const current = getDismissedPosts(storageKey);
+  const pruned = current.filter(id => known.has(id));
+  if (pruned.length !== current.length) {
+    setStorageData({ dismissedPosts: pruned }, storageKey);
+  }
+}
+
 export function clearDismissedPosts(storageKey: string = DEFAULT_STORAGE_KEY): void {
   setStorageData({ dismissedPosts: [] }, storageKey);
 }
@@ -79,6 +106,6 @@ export function clearAllData(storageKey: string = DEFAULT_STORAGE_KEY): void {
   try {
     localStorage.removeItem(storageKey);
   } catch {
-    // Ignore errors
+    /* ignore */
   }
 }

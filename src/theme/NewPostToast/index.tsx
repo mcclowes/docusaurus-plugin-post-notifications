@@ -1,8 +1,14 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import Link from '@docusaurus/Link';
 import { usePluginData } from '@docusaurus/useGlobalData';
 import type { BlogPostMetadata, NewPostToastGlobalData } from '../../types';
-import { addDismissedPost, getLastVisit, updateLastVisit } from '../../client/storage';
+import {
+  addDismissedPost,
+  getDismissedPosts,
+  getLastVisit,
+  pruneDismissedPosts,
+  updateLastVisit,
+} from '../../client/storage';
 import { getNewPosts, shouldExcludePath, formatDate } from '../../client/comparison';
 import styles from './styles.module.css';
 
@@ -25,6 +31,8 @@ interface ToastProps {
   index: number;
 }
 
+const EXIT_ANIMATION_MS = 300;
+
 function Toast({ post, options, storageKey, onDismiss, index }: ToastProps) {
   const [isExiting, setIsExiting] = useState(false);
 
@@ -33,29 +41,28 @@ function Toast({ post, options, storageKey, onDismiss, index }: ToastProps) {
     setTimeout(() => {
       addDismissedPost(post.id, storageKey);
       onDismiss(post.id);
-    }, 300); // Match CSS animation duration
+    }, EXIT_ANIMATION_MS);
   }, [post.id, storageKey, onDismiss]);
 
-  // Auto-dismiss timer
   useEffect(() => {
-    if (options.duration && options.duration > 0) {
-      const timer = setTimeout(
-        () => {
-          handleDismiss();
-        },
-        options.duration + index * 200
-      ); // Stagger dismissals
+    if (!options.duration || options.duration <= 0) return undefined;
+    const timer = setTimeout(handleDismiss, options.duration);
+    return () => clearTimeout(timer);
+  }, [options.duration, handleDismiss]);
 
-      return () => clearTimeout(timer);
-    }
-    return undefined;
-  }, [options.duration, index, handleDismiss]);
+  useEffect(() => {
+    const onKey = (e: globalThis.KeyboardEvent) => {
+      if (e.key === 'Escape') handleDismiss();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [handleDismiss]);
 
   return (
     <div
       className={`${styles.toast} ${isExiting ? styles.exiting : ''}`}
       style={{ '--index': index } as React.CSSProperties}
-      role="alert"
+      role="status"
       aria-live="polite"
     >
       <button
@@ -64,14 +71,14 @@ function Toast({ post, options, storageKey, onDismiss, index }: ToastProps) {
         aria-label="Dismiss notification"
         type="button"
       >
-        ×
+        <span aria-hidden="true">×</span>
       </button>
 
       <div className={styles.content}>
-        <span className={styles.badge}>New Post</span>
+        <span className={styles.badge}>New post</span>
 
         {options.showImage && post.image && (
-          <img src={post.image} alt="" className={styles.image} />
+          <img src={post.image} alt={post.title} className={styles.image} loading="lazy" />
         )}
 
         <h4 className={styles.title}>
@@ -96,7 +103,6 @@ function Toast({ post, options, storageKey, onDismiss, index }: ToastProps) {
   );
 }
 
-// Position class mapping
 const positionClasses: Record<string, string> = {
   'bottom-right': styles.bottomRight,
   'bottom-left': styles.bottomLeft,
@@ -106,78 +112,67 @@ const positionClasses: Record<string, string> = {
   'top-center': styles.topCenter,
 };
 
-/**
- * NewPostToastContainer - Main container component for toast notifications
- *
- * Uses usePluginData hook to access global plugin data and determines
- * which new posts to show based on the user's last visit.
- */
 export default function NewPostToastContainer() {
+  const [mounted, setMounted] = useState(false);
   const [toasts, setToasts] = useState<BlogPostMetadata[]>([]);
-  const [initialized, setInitialized] = useState(false);
+  const initializedRef = useRef(false);
 
-  // Get plugin data using the proper Docusaurus hook
   const pluginData = usePluginData(PLUGIN_NAME) as NewPostToastGlobalData | undefined;
-
   const options = pluginData?.options;
+  const posts = pluginData?.posts;
 
-  // Calculate new posts based on last visit
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Prune stale dismissed ids against current manifest whenever posts change.
+  useEffect(() => {
+    if (!mounted || !options || !posts) return;
+    pruneDismissedPosts(
+      posts.map(p => p.id),
+      options.storage.key
+    );
+  }, [mounted, options, posts]);
+
   const newPosts = useMemo(() => {
-    const posts = pluginData?.posts || [];
-    if (!options || posts.length === 0) return [];
+    if (!mounted || !options || !posts || posts.length === 0) return [];
+    if (shouldExcludePath(window.location.pathname, options)) return [];
 
-    // Check if we should show on this path
-    if (typeof window !== 'undefined') {
-      const pathname = window.location.pathname;
-      if (shouldExcludePath(pathname, options)) return [];
-    }
-
-    const lastVisit = getLastVisit(options.storage.key);
     return getNewPosts({
       posts,
-      lastVisit,
+      lastVisit: getLastVisit(options.storage.key),
       options,
+      dismissedPosts: getDismissedPosts(options.storage.key),
     });
-  }, [pluginData?.posts, options]);
+  }, [mounted, options, posts]);
 
-  // Initialize toasts after delay
   useEffect(() => {
-    if (!options || initialized) return;
+    if (!mounted || !options || initializedRef.current) return;
 
-    const delay = options.behavior.delay;
     const timer = setTimeout(() => {
-      const maxToasts = options.toast.maxToasts;
-      const postsToShow = newPosts.slice(0, maxToasts);
-      setToasts(postsToShow);
-      setInitialized(true);
-
-      // Update last visit timestamp
-      updateLastVisit(options.storage.key);
-    }, delay);
+      initializedRef.current = true;
+      setToasts(newPosts.slice(0, options.toast.maxToasts));
+    }, options.behavior.delay);
 
     return () => clearTimeout(timer);
-  }, [options, newPosts, initialized]);
+  }, [mounted, options, newPosts]);
 
-  // Also listen for custom events (for backward compatibility with client module)
-  useEffect(() => {
-    const handler = (
-      event: CustomEvent<{ posts: BlogPostMetadata[]; options: NewPostToastGlobalData['options'] }>
-    ) => {
-      const { posts: eventPosts } = event.detail;
-      setToasts(eventPosts);
-    };
+  const handleDismiss = useCallback(
+    (postId: string) => {
+      setToasts(prev => {
+        const next = prev.filter(p => p.id !== postId);
+        // Once the user has actually interacted, record this visit so stale
+        // posts aren't re-shown next time.
+        if (next.length === 0 && options) {
+          updateLastVisit(options.storage.key);
+        }
+        return next;
+      });
+    },
+    [options]
+  );
 
-    window.addEventListener('new-posts-available', handler);
-    return () => {
-      window.removeEventListener('new-posts-available', handler);
-    };
-  }, []);
-
-  const handleDismiss = useCallback((postId: string) => {
-    setToasts(prev => prev.filter(p => p.id !== postId));
-  }, []);
-
-  if (toasts.length === 0 || !options) return null;
+  if (!mounted || toasts.length === 0 || !options) return null;
 
   const positionClass = positionClasses[options.toast.position] || styles.bottomRight;
 
