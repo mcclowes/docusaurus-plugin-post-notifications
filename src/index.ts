@@ -1,4 +1,4 @@
-export { default } from './plugin';
+export { default } from './plugin.js';
 export type {
   NewPostToastOptions,
   ResolvedNewPostToastOptions,
@@ -6,13 +6,13 @@ export type {
   NewPostToastGlobalData,
   StorageData,
   ToastPosition,
-} from './types';
-export { resolveOptions, DEFAULT_OPTIONS } from './options';
+} from './types.js';
+export { resolveOptions, DEFAULT_OPTIONS } from './options.js';
 export {
-  validateOptions,
+  validateOptions as validatePluginConfig,
   PluginValidationError,
   formatValidationErrors,
   logValidationWarnings,
   type ValidationError,
   type ValidationResult,
-} from './validation';
+} from './validation.js';

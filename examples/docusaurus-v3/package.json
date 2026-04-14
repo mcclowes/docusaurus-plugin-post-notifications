@@ -1,5 +1,5 @@
 {
-  "name": "plugin-starter-example-site",
+  "name": "new-post-toast-example-site",
   "private": true,
   "version": "1.1.0",
   "scripts": {
@@ -13,7 +13,7 @@
     "@docusaurus/preset-classic": "^3.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "docusaurus-plugin-starter": "file:../../dist"
+    "docusaurus-plugin-new-post-toast": "file:../.."
   },
   "engines": {
     "node": ">=16.14"

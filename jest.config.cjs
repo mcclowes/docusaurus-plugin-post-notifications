@@ -8,6 +8,7 @@ module.exports = {
     'node_modules/(?!(.*\\.mjs$))',
   ],
   moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1',
     '^@theme/Layout$': '<rootDir>/jest/mocks/Layout',
     '^@theme/(.*)$': '<rootDir>/src/theme/$1',
     '^@docusaurus/(.*)$': '<rootDir>/jest/mocks/$1',

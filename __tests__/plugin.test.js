@@ -23,7 +23,7 @@ describe('pluginNewPostToast', () => {
     // Simulate contentLoaded with no blog content
     const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
-    await plugin.contentLoaded({
+    await plugin.allContentLoaded({
       allContent: {},
       actions: { createData, setGlobalData },
     });
@@ -72,7 +72,7 @@ describe('pluginNewPostToast', () => {
       },
     };
 
-    await plugin.contentLoaded({
+    await plugin.allContentLoaded({
       allContent: mockBlogContent,
       actions: { createData, setGlobalData },
     });
@@ -131,7 +131,7 @@ describe('pluginNewPostToast', () => {
       },
     };
 
-    await plugin.contentLoaded({
+    await plugin.allContentLoaded({
       allContent: mockBlogContent,
       actions: { createData, setGlobalData },
     });

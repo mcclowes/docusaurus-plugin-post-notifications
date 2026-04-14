@@ -2,9 +2,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import type { LoadContext, Plugin } from '@docusaurus/types';
 import validatePeerDependencies from 'validate-peer-dependencies';
-import type { NewPostToastOptions, BlogPostMetadata, NewPostToastGlobalData } from './types';
-import { resolveOptions } from './options';
-import { validateOptions, logValidationWarnings } from './validation';
+import type { NewPostToastOptions, BlogPostMetadata, NewPostToastGlobalData } from './types.js';
+import { resolveOptions } from './options.js';
+import { validateOptions, logValidationWarnings } from './validation.js';
 
 const currentFilename = fileURLToPath(import.meta.url);
 const currentDirname = path.dirname(currentFilename);
@@ -49,7 +49,7 @@ export default function pluginNewPostToast(
     name: 'docusaurus-plugin-new-post-toast',
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async contentLoaded(args: any) {
+    async allContentLoaded(args: any) {
       if (!opts.enabled) return;
 
       const allContent = args.allContent as AllContent;

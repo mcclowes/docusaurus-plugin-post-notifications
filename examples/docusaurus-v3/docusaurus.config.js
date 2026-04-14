@@ -40,8 +40,7 @@ export default {
 
   plugins: [
     [
-      // Use the local plugin from the repo root
-      path.resolve(__dirname, '../../dist'),
+      'docusaurus-plugin-new-post-toast',
       {
         // Toast appearance
         toast: {
@@ -59,30 +58,6 @@ export default {
         },
       },
     ],
-    // Plugin to configure webpack to ignore Node.js modules
-    function () {
-      return {
-        name: 'webpack-node-modules-config',
-        configureWebpack(config, isServer) {
-          return {
-            resolve: {
-              fallback: {
-                path: false,
-                url: false,
-                fs: false,
-                'fs-extra': false,
-                'graceful-fs': false,
-                jsonfile: false,
-                util: false,
-                assert: false,
-                stream: false,
-                constants: false,
-              },
-            },
-          };
-        },
-      };
-    },
   ],
 
   themeConfig: {
