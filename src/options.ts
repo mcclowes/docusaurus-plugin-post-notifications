@@ -1,4 +1,4 @@
-import type { NewPostToastOptions, ResolvedNewPostToastOptions } from './types';
+import type { NewPostToastOptions, ResolvedNewPostToastOptions } from './types.js';
 
 // Default configuration
 const DEFAULT_OPTIONS: ResolvedNewPostToastOptions = {

@@ -1,4 +1,4 @@
-import type { NewPostToastOptions } from './types';
+import type { NewPostToastOptions } from './types.js';
 
 export interface ValidationError {
   field: string;

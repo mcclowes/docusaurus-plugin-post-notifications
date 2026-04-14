@@ -1,5 +1,5 @@
 import type { BlogPostMetadata, ResolvedNewPostToastOptions } from '../types';
-import { getDismissedPosts } from './storage';
+import { getDismissedPosts } from './storage.js';
 
 const MS_PER_DAY = 86_400_000;
 
