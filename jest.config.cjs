@@ -16,7 +16,7 @@ module.exports = {
     '^unist-util-visit$': '<rootDir>/jest/mocks/unist-util-visit.js',
   },
   testMatch: ['**/__tests__/**/*.(t|j)s?(x)', '<rootDir>/src/**/?(*.)+(spec|test).(t|j)s?(x)'],
-  testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
+  testPathIgnorePatterns: ['/node_modules/', '/e2e/', '/.claude/', '/dist/'],
   collectCoverageFrom: [
     'src/components/**/*.{ts,tsx}',
     'src/theme/**/*.{ts,tsx}',
