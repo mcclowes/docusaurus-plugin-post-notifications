@@ -35,8 +35,8 @@ Share your idea by opening an issue that includes:
 ## Local development
 
 ```bash
-git clone https://github.com/mcclowes/docusaurus-plugin-new-post-toast.git
-cd docusaurus-plugin-new-post-toast
+git clone https://github.com/mcclowes/docusaurus-plugin-post-notifications.git
+cd docusaurus-plugin-post-notifications
 npm install
 ```
 
