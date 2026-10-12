@@ -14,8 +14,9 @@ permissions:
   id-token: write
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-publish
+  cancel-in-progress: false
+  queue: max
 
 jobs:
   release:
@@ -28,6 +29,17 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 2
+          fetch-tags: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Test release state checks
+        run: npm run test:release
 
       - name: Determine version
         id: version
@@ -39,22 +51,8 @@ jobs:
       - name: Check if already published
         id: check
         env:
-          VERSION: ${{ steps.version.outputs.version }}
-        run: |
-          if git rev-parse "v$VERSION" >/dev/null 2>&1; then
-            echo "Tag v$VERSION already exists, skipping"
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Setup Node.js
-        if: steps.check.outputs.skip == 'false'
-        uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: 'npm'
-          registry-url: 'https://registry.npmjs.org'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/release-state.mjs
 
       - name: Upgrade npm for OIDC support
         if: steps.check.outputs.skip == 'false'
@@ -77,11 +75,18 @@ jobs:
         env:
           TAG: ${{ steps.version.outputs.tag }}
         run: |
-          git tag "$TAG"
-          git push origin "$TAG"
+          if git show-ref --verify --quiet "refs/tags/$TAG"; then
+            if [ "$(git rev-parse "$TAG^{commit}")" != "$(git rev-parse HEAD)" ]; then
+              echo "Release tag points to a different commit" >&2
+              exit 1
+            fi
+          else
+            git tag "$TAG"
+            git push origin "refs/tags/$TAG"
+          fi
 
       - name: Publish to npm with provenance
-        if: steps.check.outputs.skip == 'false'
+        if: steps.check.outputs.npm_published == 'false'
         env:
           VERSION: ${{ steps.version.outputs.version }}
         run: |
@@ -92,7 +97,7 @@ jobs:
           fi
 
       - name: Create GitHub Release
-        if: steps.check.outputs.skip == 'false'
+        if: steps.check.outputs.github_published == 'false'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.tag }}

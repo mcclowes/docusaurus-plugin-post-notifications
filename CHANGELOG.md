@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Release reruns resume missing npm or GitHub publication without skipping an existing tag (#73).
 - Transformed from docusaurus-plugin-starter to docusaurus-plugin-new-post-toast
 - Complete rewrite to implement new blog post toast notifications
 

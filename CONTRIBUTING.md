@@ -43,6 +43,7 @@ npm install
 - `npm run build` – compile TypeScript and copy assets into `dist/`
 - `npm run watch` – rebuild on changes (ideal while running the example site)
 - `npm test` – run Jest
+- `npm run test:release` – check publication decisions without installing dependencies or contacting registries
 - `npm run example:start` – launch the bundled Docusaurus example for manual testing
 - `npm run format` / `npm run format:check` – apply or verify Prettier formatting
 
