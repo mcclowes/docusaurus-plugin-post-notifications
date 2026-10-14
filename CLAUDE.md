@@ -67,3 +67,16 @@ Rebuild before running the example if you change `src/`.
 - `PLUGIN-DESIGN.md` — design rationale
 - `docs/CLIENT_MODULES.md` — client module details
 - `AGENTS.md` — available Claude skills for this repo
+
+## Shared docs site
+
+This plugin publishes as **`docusaurus-plugin-new-post-toast`** (the repo directory is `docusaurus-plugin-post-notifications`; the package name is what matters for consumers).
+
+User-facing changes in this repo should also be reflected in the shared documentation site at `~/Development/docusaurus/docusaurus-plugins-docs/` (separate repo; documents and dogfoods every plugin in this family).
+
+After a change that a consumer can observe — new option, changed default, renamed export, new/removed hook, changed behavior — update both:
+
+- `README.md` here (canonical API reference)
+- `docs/new-post-toast/` in `docusaurus-plugins-docs` (note the path uses the published package name, not the repo directory name), at minimum `configuration.md`; also `overview.md` / `getting-started.md` / the relevant `advanced/*.md` (multiple blogs, storage) when the change reaches those topics
+
+Internal refactors, test-only changes, and build tweaks don't need docs-site updates.

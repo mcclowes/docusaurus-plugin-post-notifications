@@ -2,6 +2,12 @@
 
 A Docusaurus plugin that shows toast notifications for new blog posts based on the user's last visit timestamp stored in localStorage.
 
+## Compatibility
+
+| Plugin version | Docusaurus                       | React | Node   |
+| -------------- | -------------------------------- | ----- | ------ |
+| `0.2.x`        | `^3.0.0` (tested up to `3.10.1`) | `^18` | `>=18` |
+
 ## Features
 
 - **No backend required** - Works entirely client-side using localStorage
