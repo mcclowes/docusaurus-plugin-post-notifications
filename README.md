@@ -137,21 +137,28 @@ The toast component uses CSS modules and respects Docusaurus CSS variables. You 
 
 ## Development
 
+Use Node 20 or newer. CI checks Node 20 and 22.
+
 ```bash
 # Install dependencies
-npm install
+npm ci
 
 # Build the plugin
 npm run build
 
 # Run tests
 npm test
+npm run test:package
 
-# Start example site
+# Install and build the example site
+npm ci --prefix examples/docusaurus-v3
+npm run example:build
+
+# Start the example site
 npm run example:start
 ```
 
-## File Structure
+## File structure
 
 ```
 src/

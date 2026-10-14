@@ -2,7 +2,7 @@
 
 Thanks for helping improve the plugin! This document explains how to work on the project and what to expect from the contribution process.
 
-## Code of Conduct
+## Code of conduct
 
 Be kind, inclusive, and constructive. We aim to foster a welcoming environment for everyone.
 
@@ -34,17 +34,22 @@ Share your idea by opening an issue that includes:
 
 ## Local development
 
+Use Node 20 or newer. CI runs on Node 20 and 22.
+
 ```bash
 git clone https://github.com/mcclowes/docusaurus-plugin-post-notifications.git
 cd docusaurus-plugin-post-notifications
-npm install
+npm ci
 ```
 
-- `npm run build` – compile TypeScript and copy assets into `dist/`
+- `npm run build` – use tsup to bundle ESM, CommonJS, declarations, source maps, and CSS assets into `dist/`
 - `npm run watch` – rebuild on changes (ideal while running the example site)
 - `npm test` – run Jest
+- `npm run test:package` – check the built package's module formats, theme, and default blog data
 - `npm run test:release` – check publication decisions without installing dependencies or contacting registries
-- `npm run example:start` – launch the bundled Docusaurus example for manual testing
+- `npm run typecheck` / `npm run lint` – check types and code quality
+- `npm ci --prefix examples/docusaurus-v3` – install the example's locked dependencies
+- `npm run example:build` / `npm run example:start` – build or launch the example after building the plugin and installing the example's dependencies
 - `npm run format` / `npm run format:check` – apply or verify Prettier formatting
 
 ## Project layout
@@ -52,9 +57,10 @@ npm install
 ```text
 src/
   index.ts             # Main export
-  plugin.ts            # Plugin implementation with contentLoaded hook
+  plugin.ts            # Plugin implementation with allContentLoaded hook
   types.ts             # TypeScript interfaces
-  options.ts           # Default options and validation
+  options.ts           # Default options and resolution
+  validation.ts        # Diagnostic validation
   client/
     index.ts           # Client module (lifecycle hooks)
     storage.ts         # localStorage utilities
@@ -64,7 +70,7 @@ src/
     Root/              # Root wrapper for toast container
 dist/                  # Compiled output shipped to npm
 examples/docusaurus-v3/  # Example site consuming ../../dist
-scripts/               # Helper scripts for build/watch flows
+scripts/               # Built-package tests and release-state helpers/tests
 __tests__/             # Jest tests
 ```
 
@@ -73,7 +79,8 @@ Edit files in `src/` and run the build script before publishing or testing again
 ## Testing checklist
 
 - Add or update tests near the code you touched (plugin logic under `__tests__/`, component tests in `src/theme`).
-- Run `npm test` and ensure it passes.
+- Match CI: run `npm run test:release`, `npm ci`, `npm run build`, `npm run test:package`, `npm run typecheck`, `npm run lint`, `npm run format:check`, and `npm test`.
+- Install the example with `npm ci --prefix examples/docusaurus-v3`, then run `npm run example:build`.
 - Run `npm run example:start` if your change affects runtime behaviour.
 - Keep coverage healthy—try not to reduce it without a strong reason.
 
@@ -87,7 +94,7 @@ Edit files in `src/` and run the build script before publishing or testing again
 ## Pull request process
 
 1. Ensure your branch is up to date with `main`.
-2. Run `npm test` and `npm run build` (or `npm run watch` while developing).
+2. Run the testing checklist above. Use `npm run watch` while developing.
 3. Update documentation (README, example site) if behaviour changes.
 4. Describe the change clearly in the PR template, including testing steps.
 5. Address review feedback promptly—collaboration is the goal.

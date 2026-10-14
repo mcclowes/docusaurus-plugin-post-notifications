@@ -10,17 +10,17 @@ Guidance for Claude Code when working in this repository.
 
 - TypeScript, React 18, Docusaurus 3 (peer deps)
 - Jest + React Testing Library for unit tests; Playwright for e2e
-- Build: `tsc` + `node scripts/build.js` (copies theme CSS/assets into `dist/`)
+- Build: tsup produces ESM, CommonJS, declarations, source maps, and CSS assets in `dist/`
 - ESLint flat config, Prettier, Husky + lint-staged
 
-Note: `tsup.config.ts` exists but is unused — the build goes through `scripts/build.js`.
+`tsup.config.ts` defines the entries and module shims. Node 20 or newer is required; CI checks Node 20 and 22.
 
 ## Layout
 
 ```
 src/
   index.ts            # Main export
-  plugin.ts           # Plugin factory (loadContent, contentLoaded, getClientModules, getThemePath)
+  plugin.ts           # Plugin factory (allContentLoaded, getThemePath)
   options.ts          # Defaults + resolveOptions
   validation.ts       # Options validation
   types.ts
@@ -34,31 +34,37 @@ src/
 __tests__/            # Jest tests
 e2e/                  # Playwright tests
 examples/docusaurus-v3/  # Example site (consumes ../../dist)
-scripts/              # build.js, watch.js, copy-theme-files.js, watch-css.js
+scripts/              # Built-package tests and release-state helpers/tests
 ```
 
 ## Common commands
 
-- `npm run build` — compile + copy assets to `dist/`
+- `npm ci` — install locked dependencies
+- `npm run build` — bundle package formats and assets into `dist/`
 - `npm run watch` — rebuild on changes
 - `npm test` / `npm run test:watch` / `npm run test:coverage`
+- `npm run test:package` — check the built ESM/CommonJS entry points, theme, and default blog data
+- `npm run test:release` — check release decisions without registry requests
+- `npm run typecheck` — check TypeScript without emitting files
 - `npm run test:e2e` — Playwright
 - `npm run example:start` — run the example site against the built `dist/`
-- `npm run lint` / `npm run format`
+- `npm ci --prefix examples/docusaurus-v3` — install the example's locked dependencies
+- `npm run example:build` — production-build the example
+- `npm run lint` / `npm run format` / `npm run format:check`
 
-Rebuild before running the example if you change `src/`.
+Build before running package tests or the example, and install the example's dependencies before starting it. CI runs release tests, a clean root install, build, package tests, types, lint, formatting, Jest, a clean example install, and the example build.
 
 ## Conventions
 
 - TDD where practical; colocate or mirror tests under `__tests__/` or alongside components
 - Keep client code SSR-safe — guard with `ExecutionEnvironment.canUseDOM` before touching `window`/`localStorage`
-- SCSS modules for component styles; respect Docusaurus CSS variables for theming
+- CSS modules for component styles; respect Docusaurus CSS variables for theming
 - Sentence case in docs and commit messages
 - Track work via GitHub issues; reference with `Fixes #N` in PRs
 
 ## Publishing
 
-`prepublishOnly` runs build + tests. `files` ships only `dist/`, `README.md`, `LICENSE`.
+`prepublishOnly` runs build, package tests, and Jest. `files` ships only `dist/`, `README.md`, `LICENSE`.
 
 ## Related docs
 
