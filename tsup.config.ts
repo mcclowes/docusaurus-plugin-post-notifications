@@ -11,6 +11,7 @@ export default defineConfig({
   },
   dts: true,
   format: ['cjs', 'esm'],
+  shims: true,
   sourcemap: true,
   clean: true,
   target: 'es2020',
