@@ -22,9 +22,7 @@ module.exports = {
           glossaryPath: 'glossary/glossary.json',
           routePath: '/glossary',
         },
-        docs: {
-          /* your docs config */
-        },
+        docs: {/* your docs config */},
       },
     ],
   ],

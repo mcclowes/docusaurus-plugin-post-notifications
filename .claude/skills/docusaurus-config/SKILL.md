@@ -23,20 +23,9 @@ const config: Config = {
   organizationName: 'my-org',
   projectName: 'my-project',
 
-  presets: [
-    [
-      '@docusaurus/preset-classic',
-      {
-        /* options */
-      },
-    ],
-  ],
-  themeConfig: {
-    /* theme config */
-  },
-  customFields: {
-    /* unknown fields go here */
-  },
+  presets: [['@docusaurus/preset-classic', {/* options */}]],
+  themeConfig: {/* theme config */},
+  customFields: {/* unknown fields go here */},
 };
 
 export default config;

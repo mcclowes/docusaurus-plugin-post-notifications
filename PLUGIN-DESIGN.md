@@ -84,12 +84,7 @@ interface NewPostToastOptions {
   // Toast appearance
   toast?: {
     position?:
-      | 'bottom-right'
-      | 'bottom-left'
-      | 'top-right'
-      | 'top-left'
-      | 'bottom-center'
-      | 'top-center';
+      'bottom-right' | 'bottom-left' | 'top-right' | 'top-left' | 'bottom-center' | 'top-center';
     duration?: number; // Auto-dismiss after ms (0 = no auto-dismiss)
     maxToasts?: number; // Max toasts to show at once (default: 3)
     showDescription?: boolean; // Show post description in toast
