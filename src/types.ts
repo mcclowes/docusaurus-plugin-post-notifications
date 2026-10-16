@@ -1,10 +1,5 @@
 export type ToastPosition =
-  | 'bottom-right'
-  | 'bottom-left'
-  | 'top-right'
-  | 'top-left'
-  | 'bottom-center'
-  | 'top-center';
+  'bottom-right' | 'bottom-left' | 'top-right' | 'top-left' | 'bottom-center' | 'top-center';
 
 export interface NewPostToastOptions {
   enabled?: boolean;
